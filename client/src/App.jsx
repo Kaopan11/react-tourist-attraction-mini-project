@@ -25,6 +25,28 @@ function App() {
     return () => clearTimeout(timer);
   }, [keyword]);
 
+  // จัดการเมื่อผู้ใช้คลิก Tag บนการ์ดสถานที่ท่องเที่ยว
+  function handleTagClick(tag) {
+    // 1. ตัดช่องว่างหัวท้ายของ keyword แล้วแยกเป็นคำๆ ด้วยช่องว่าง
+    //    จากนั้นกรองสตริงว่างออก (เช่น ช่องว่างซ้อนกันหลายช่อง) เพื่อได้อาเรย์คำที่สะอาด
+    const keywords = keyword
+      .trim()
+      .split(" ")
+      .filter((word) => word !== "");
+
+    // 2. ตรวจสอบว่าคำ tag ที่ถูกคลิก มีอยู่ในอาเรย์ keyword แล้วหรือยัง
+    //    ใช้ includes() เทียบทีละคำ เพื่อป้องกันการเพิ่มคำซ้ำเมื่อคลิก Tag เดิมซ้ำ
+    const isDuplicate = keywords.includes(tag);
+
+    // 3. ถ้ายังไม่มีคำนี้ในรายการ จึงเพิ่ม tag เข้าไปท้ายอาเรย์
+    if (!isDuplicate) {
+      keywords.push(tag);
+    }
+
+    // 4. นำอาเรย์คำทั้งหมดมารวมกลับเป็นสตริง คั่นด้วยช่องว่างหนึ่งเคาะ แล้วอัปเดต keyword
+    setKeyword(keywords.join(" "));
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-10">
       <main className="mx-auto flex w-full max-w-4xl flex-col gap-8">
@@ -42,7 +64,7 @@ function App() {
           onChange={(e) => setKeyword(e.target.value)}
         />
 
-        <AttractionList trips={trips} />
+        <AttractionList trips={trips} onTagClick={handleTagClick} />
       </main>
     </div>
   );
