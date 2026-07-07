@@ -1,4 +1,4 @@
-function AttractionCard({ trip }) {
+function AttractionCard({ trip, onTagClick }) {
   // 3. ตัด Description ให้ยาวไม่เกิน 100 ตัวอักษร แล้วต่อท้ายด้วย '...'
   const shortDescription =
     trip.description.length > 100
@@ -59,12 +59,15 @@ function AttractionCard({ trip }) {
         {/* 5. แสดงหมวดหมู่ (Tags) โดยวนลูปจาก trip.tags */}
         <div className="mt-auto flex flex-wrap gap-2 pt-2">
           {trip.tags.map((tag) => (
-            <span
+            <button
               key={tag}
-              className="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-600"
+              type="button"
+              // เมื่อคลิก Tag ส่งชื่อหมวดหมู่กลับไปยัง handleTagClick ใน App.jsx
+              onClick={() => onTagClick(tag)}
+              className="cursor-pointer rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-600 transition hover:bg-slate-200 hover:underline"
             >
               {tag}
-            </span>
+            </button>
           ))}
         </div>
       </div>

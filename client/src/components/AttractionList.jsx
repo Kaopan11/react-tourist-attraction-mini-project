@@ -1,6 +1,6 @@
 import AttractionCard from "./AttractionCard";
 
-function AttractionList({ trips }) {
+function AttractionList({ trips, onTagClick }) {
   if (trips.length === 0) {
     return (
       <p className="py-12 text-center text-gray-500">
@@ -12,7 +12,7 @@ function AttractionList({ trips }) {
   return (
     <div className="flex flex-col gap-6">
       {trips.map((trip) => (
-        <AttractionCard key={trip.eid} trip={trip} />
+        <AttractionCard key={trip.eid} trip={trip} onTagClick={onTagClick} />
       ))}
     </div>
   );
