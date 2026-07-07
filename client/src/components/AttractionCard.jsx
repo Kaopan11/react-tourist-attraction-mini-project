@@ -1,4 +1,21 @@
+import { useState } from "react";
+
 function AttractionCard({ trip, onTagClick }) {
+  // State เก็บสถานะว่าคัดลอกลิงก์สำเร็จแล้วหรือยัง (เริ่มต้นเป็น false)
+  const [copied, setCopied] = useState(false);
+
+  // ฟังก์ชันคัดลอกลิงก์สถานที่ท่องเที่ยวไปยัง Clipboard ของผู้ใช้
+  async function handleCopyLink() {
+    // นำ URL ของสถานที่ท่องเที่ยวไปใส่ใน Clipboard
+    await navigator.clipboard.writeText(trip.url);
+
+    // เปลี่ยนสถานะเป็น true เพื่อแสดง Feedback บนปุ่ม
+    setCopied(true);
+
+    // หลังจาก 2 วินาที รีเซ็ตสถานะกลับเป็น false ให้ปุ่มกลับสู่หน้าตาเดิม
+    setTimeout(() => setCopied(false), 2000);
+  }
+
   // 3. ตัด Description ให้ยาวไม่เกิน 100 ตัวอักษร แล้วต่อท้ายด้วย '...'
   const shortDescription =
     trip.description.length > 100
@@ -46,15 +63,50 @@ function AttractionCard({ trip, onTagClick }) {
           {shortDescription}
         </p>
 
-        {/* 4. ปุ่ม 'อ่านต่อ' สีฟ้า กดแล้วเปิดแท็บใหม่ไปที่ trip.url */}
-        <a
-          href={trip.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex w-fit rounded-full bg-sky-500 px-4 py-1.5 text-sm font-medium text-white transition hover:bg-sky-600"
-        >
-          อ่านต่อ
-        </a>
+        {/* 4. ปุ่ม 'อ่านต่อ' และปุ่มคัดลอกลิงก์ วางคู่กันในแนวนอน */}
+        <div className="flex flex-wrap items-center gap-2">
+          <a
+            href={trip.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex w-fit rounded-full bg-sky-500 px-4 py-1.5 text-sm font-medium text-white transition hover:bg-sky-600"
+          >
+            อ่านต่อ
+          </a>
+
+          {/* ปุ่มคัดลอกลิงก์ — กดแล้วเรียก handleCopyLink เพื่อคัดลอก trip.url */}
+          <button
+            type="button"
+            onClick={handleCopyLink}
+            className={`inline-flex w-fit items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium text-white transition ${
+              copied
+                ? "bg-green-500 hover:bg-green-600"
+                : "bg-sky-500 hover:bg-sky-600"
+            }`}
+          >
+            {copied ? (
+              "คัดลอกแล้ว! ✓"
+            ) : (
+              <>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-4 w-4"
+                  aria-hidden="true"
+                >
+                  <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                  <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                </svg>
+                คัดลอกลิงก์
+              </>
+            )}
+          </button>
+        </div>
 
         {/* 5. แสดงหมวดหมู่ (Tags) โดยวนลูปจาก trip.tags */}
         <div className="mt-auto flex flex-wrap gap-2 pt-2">
